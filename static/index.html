@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WorkBridge — Thai ↔ Myanmar</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-icon">💬</span><span>WorkBridge</span></div>
+    <nav>
+      <button class="nav-item active" data-page="translator">▣ <span>Translator</span></button>
+      <button class="nav-item" data-page="conversation">▢ <span>Conversation</span></button>
+      <button class="nav-item" data-page="summary">✦ <span>Summary</span></button>
+      <button class="nav-item" data-page="tasks">☑ <span>Tasks</span></button>
+      <button class="nav-item" data-page="history">◷ <span>History</span></button>
+    </nav>
+    <div class="sidebar-bottom">
+      <button class="nav-item">⚙ <span>Settings</span></button>
+      <button class="nav-item" id="clearAll">↪ <span>Clear session</span></button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1 id="pageTitle">Real-time Translator</h1>
+        <p id="pageSubtitle">แปลภาษาพม่า ↔ ไทย โดยไม่ต้องเข้าห้องประชุม</p>
+      </div>
+      <div class="profile"><span class="avatar">A</span> Anna</div>
+    </header>
+
+    <section id="translator" class="page active-page">
+      <div class="language-row">
+        <div>
+          <label>ภาษาต้นฉบับ</label>
+          <select id="sourceLang">
+            <option value="my">Myanmar</option>
+            <option value="th">Thai</option>
+          </select>
+        </div>
+        <button class="swap" id="swapLang">⇄</button>
+        <div>
+          <label>ภาษาแปล</label>
+          <select id="targetLang">
+            <option value="th">Thai</option>
+            <option value="my">Myanmar</option>
+          </select>
+        </div>
+        <span class="mode-pill" id="modePill">Demo fallback ready</span>
+      </div>
+
+      <div class="translator-grid">
+        <div class="language-card source-card">
+          <div class="card-head"><span>Original</span><span id="sourceName">Myanmar</span></div>
+          <textarea id="sourceText" placeholder="พิมพ์ข้อความ หรือกด 🎤 แล้วพูด..."></textarea>
+          <div class="wave" id="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="controls">
+            <button class="primary" id="micBtn">🎤 Start listening</button>
+            <button class="secondary" id="translateBtn">Translate</button>
+          </div>
+        </div>
+
+        <div class="translation-arrow">→</div>
+
+        <div class="language-card target-card">
+          <div class="card-head"><span>Translation</span><span id="targetName">Thai</span></div>
+          <div class="translated" id="translatedText">คำแปลจะแสดงตรงนี้</div>
+          <div class="controls">
+            <button class="secondary" id="speakBtn">🔊 Listen</button>
+            <button class="primary" id="saveBtn">＋ Save to conversation</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip">💡 <b>Tip:</b> พูดให้จบหนึ่งประโยค ระบบจะส่งข้อความมาแปลให้อัตโนมัติ หาก speech recognition ไม่รองรับภาษาเมียนมาร์ สามารถพิมพ์ข้อความแทนได้</div>
+
+      <div class="quick-row">
+        <button class="quick" data-text="မင်္ဂလာပါ။">Demo Myanmar greeting</button>
+        <button class="quick" data-text="พรุ่งนี้เราจะประชุมเวลา 2 โมงเย็น">Demo Thai sentence</button>
+        <button class="quick" data-text="We need to finish the presentation today.">Demo English sentence</button>
+      </div>
+    </section>
+
+    <section id="conversation" class="page">
+      <div class="section-head">
+        <div><h2>Conversation</h2><p>บทสนทนาที่บันทึกไว้</p></div>
+        <button class="danger" id="clearConversation">Clear conversation</button>
+      </div>
+      <div id="conversationList" class="conversation-list empty">ยังไม่มีบทสนทนา</div>
+      <button class="primary big" id="goSummary">✦ Create AI-style Summary</button>
+    </section>
+
+    <section id="summary" class="page">
+      <div class="section-head"><div><h2>Summary</h2><p>สรุปบทสนทนาและสิ่งที่ต้องทำ</p></div></div>
+      <div class="summary-grid">
+        <article class="panel"><h3>✦ Summary</h3><p id="summaryText">กด “Generate Summary” เพื่อวิเคราะห์บทสนทนา</p></article>
+        <article class="panel"><h3>📌 Meeting information</h3>
+          <div class="info"><span>Language</span><b>Thai ↔ Myanmar</b></div>
+          <div class="info"><span>Messages</span><b id="messageCount">0</b></div>
+        </article>
+      </div>
+      <article class="panel topics"><h3>Topics & Tasks</h3><ul id="summaryTasks"><li>ยังไม่มีงานที่ตรวจพบ</li></ul></article>
+      <button class="primary big" id="generateSummary">Generate Summary</button>
+    </section>
+
+    <section id="tasks" class="page">
+      <div class="section-head"><div><h2>Tasks</h2><p>รายการงานจากบทสนทนา</p></div><button class="primary" id="addTask">＋ Add task</button></div>
+      <div class="stats"><div><b id="taskTotal">0</b><span>ทั้งหมด</span></div><div><b id="taskOpen">0</b><span>ยังไม่เสร็จ</span></div><div><b id="taskDone">0</b><span>เสร็จแล้ว</span></div></div>
+      <div id="taskList" class="task-list empty">ยังไม่มีงาน</div>
+    </section>
+
+    <section id="history" class="page">
+      <div class="section-head"><div><h2>History</h2><p>ประวัติการใช้งานบนเครื่องนี้</p></div></div>
+      <div class="history-card"><b>Current WorkBridge session</b><span id="historyCount">0 messages</span></div>
+      <p class="muted">MVP นี้เก็บข้อมูลไว้ใน browser เพื่อให้เริ่มพัฒนาได้โดยไม่ต้องตั้ง database ก่อน</p>
+    </section>
+  </main>
+</div>
+<script src="/static/app.js"></script>
+</body>
+</html>
